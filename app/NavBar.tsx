@@ -11,13 +11,16 @@ const NavBar = () => {
     { label: "Issues", href: "/issues" },
   ];
   return (
-    <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center">
-      <Link href="/">
+    <nav
+      className="flex space-x-6 border-b mb-5 px-5 h-14 items-center"
+      key="navbar"
+    >
+      <Link href="/" key="logo">
         <VscCommentUnresolved />
       </Link>
-      <ul className="flex space-x-6">
+      <ul className="flex space-x-6" key="nav-ul">
         {links.map((link) => (
-          <li>
+          <li key={link.href}>
             <Link
               key={link.label}
               className={classnames({
