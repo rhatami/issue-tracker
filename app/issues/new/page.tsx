@@ -10,8 +10,8 @@ import Error from "next/error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { issueSchema } from "@/app/ValidationSchemas";
 import { z } from "zod";
-import ErrorMessage from "@/app/components/errorMessage";
 import Spinner from "@/app/components/Spinner";
+import ErrorMessage from "@/app/components/ErrorMessage";
 
 type IssueForm = z.infer<typeof issueSchema>;
 
@@ -22,9 +22,21 @@ const newIssuePage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<IssueForm>({ resolver: zodResolver(issueSchema) });
+
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+
+  const submitHandler = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setSubmitting(false);
+      setError("An unexpected Error occurred!");
+    }
+  });
 
   return (
     <div className="max-w-xl ">
@@ -33,19 +45,7 @@ const newIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setSubmitting(false);
-            setError("An unexpected Error occurred!");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={submitHandler}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
