@@ -33,7 +33,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
       issue
         ? await axios.patch("/api/issues/" + issue.id, data)
         : await axios.post("/api/issues", data);
-      issue ? router.push("/issues/" + issue.id) : router.push("/issues");
+      router.push("/issues");
       router.refresh();
     } catch (error) {
       setSubmitting(false);
