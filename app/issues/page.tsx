@@ -5,6 +5,7 @@ import IssuesToolbar from "./IssuesToolbar";
 
 const issuesPage = async () => {
   const issues = await prisma.issue.findMany();
+
   return (
     <div>
       <IssuesToolbar />

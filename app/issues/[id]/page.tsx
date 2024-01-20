@@ -3,12 +3,15 @@ import { Box, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
 import IssueButtons from "./IssueButtons";
 import IssueDetails from "./IssueDetails";
+import { getServerSession } from "next-auth";
+import { AuthOptions } from "@/app/auth/AuthOptions";
 
 const issueDetailPage = async ({
   params: { id },
 }: {
   params: { id: string };
 }) => {
+  const session = await getServerSession(AuthOptions);
   const issue = await prisma.issue.findUnique({ where: { id: parseInt(id) } });
 
   if (!issue) return notFound();
@@ -18,9 +21,7 @@ const issueDetailPage = async ({
       <Box className="md:col-span-4">
         <IssueDetails issue={issue} />
       </Box>
-      <Box>
-        <IssueButtons issueId={issue.id} />
-      </Box>
+      <Box>{session && <IssueButtons issueId={issue.id} />}</Box>
     </Grid>
   );
 };

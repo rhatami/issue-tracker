@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { VscCommentUnresolved } from "react-icons/vsc";
+import Skeleton from "@/app/components/Skeleton";
 
 const NavBar = () => {
   return (
@@ -61,7 +62,7 @@ const NavLinks = () => {
 const UserLogin = () => {
   const { status, data: session } = useSession();
 
-  if (status === "loading") return null;
+  if (status === "loading") return <Skeleton width="3rem" />;
 
   if (status === "unauthenticated")
     return (
