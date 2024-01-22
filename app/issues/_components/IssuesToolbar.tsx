@@ -6,7 +6,7 @@ import IssueFilter from "./IssueFilter";
 
 const IssuesToolbar = () => {
   return (
-    <Flex mb="5" justify="between">
+    <Flex justify="between">
       <IssueFilter />
       <NewIssueButton />
     </Flex>
