@@ -1,6 +1,6 @@
 "use client";
 import { Skeleton, Spinner } from "@/app/components";
-import { User } from "@prisma/client";
+import { Issue, User } from "@prisma/client";
 import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import { AlertDialog, Button, Flex, Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
@@ -9,19 +9,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-const IssueButtons = ({ issueId }: { issueId: string }) => {
+const IssueButtons = ({ issue }: { issue: Issue }) => {
   const [error, setError] = useState(false);
   return (
     <Flex direction="column" gap="4">
       <ErrorDialog error={error} setError={setError} />
-      <AssignUser />
-      <EditButton issueId={issueId} />
-      <DeleteButton issueId={issueId} setError={setError} />
+      <AssignUser issue={issue} setError={setError} />
+      <EditButton issueId={issue.id} />
+      <DeleteButton issueId={issue.id} setError={setError} />
     </Flex>
   );
 };
 
-const EditButton = ({ issueId }: { issueId: string }) => {
+const EditButton = ({ issueId }: { issueId: number }) => {
   return (
     <Button>
       <Pencil2Icon />
@@ -34,7 +34,7 @@ const DeleteButton = ({
   issueId,
   setError,
 }: {
-  issueId: string;
+  issueId: number;
   setError: Dispatch<SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
@@ -82,7 +82,13 @@ const DeleteButton = ({
   );
 };
 
-const AssignUser = () => {
+const AssignUser = ({
+  issue,
+  setError,
+}: {
+  issue: Issue;
+  setError: Dispatch<SetStateAction<boolean>>;
+}) => {
   const {
     data: users,
     isLoading,
@@ -90,7 +96,7 @@ const AssignUser = () => {
   } = useQuery<User[]>({
     queryKey: ["users list"],
     queryFn: () => axios.get("/api/users").then((response) => response.data),
-    staleTime: 60000, // 60seconds
+    staleTime: 360000, // 360seconds
     retry: 3,
   });
 
@@ -98,12 +104,33 @@ const AssignUser = () => {
 
   if (error) return null; // dont render component
 
+  const router = useRouter();
+  const selectHandler = async (userId: string) => {
+    try {
+      if (userId == "-1")
+        await axios.patch("/api/issues/" + issue.id, {
+          assignedToUserId: null,
+        });
+      else
+        await axios.patch("/api/issues/" + issue.id, {
+          assignedToUserId: userId,
+        });
+      router.refresh();
+    } catch (error) {
+      setError(true);
+    }
+  };
+
   return (
-    <Select.Root>
+    <Select.Root
+      onValueChange={(userId) => selectHandler(userId)}
+      defaultValue={issue.assignedToUserId || ""}
+    >
       <Select.Trigger placeholder="Assign to" />
       <Select.Content>
         <Select.Group>
           <Select.Label>Users List</Select.Label>
+          <Select.Item value="-1">Unassign</Select.Item>
           {users?.map((user) => (
             <Select.Item key={user.id} value={user.id}>
               {user.name}

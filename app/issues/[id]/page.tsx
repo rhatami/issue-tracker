@@ -21,7 +21,7 @@ const issueDetailPage = async ({
       <Box className="md:col-span-4">
         <IssueDetails issue={issue} />
       </Box>
-      <Box>{session && <IssueButtons issueId={issue.id} />}</Box>
+      <Box>{session && <IssueButtons issue={issue} />}</Box>
     </Grid>
   );
 };
