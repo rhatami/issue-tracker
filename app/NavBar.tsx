@@ -67,7 +67,7 @@ const UserLogin = () => {
   if (status === "unauthenticated")
     return (
       <Link href="/api/auth/signin" className="nav-link">
-        Singin
+        Signin
       </Link>
     );
 
