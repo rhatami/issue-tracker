@@ -4,6 +4,7 @@ import { IssuesTable } from "./_components/IssuesTable";
 import IssuesToolbar from "./_components/IssuesToolbar";
 import Pagination from "../components/Pagination";
 import { Flex } from "@radix-ui/themes";
+import { Metadata } from "next";
 
 interface QueryString {
   searchParams: { status: Status; orderBy: keyof Issue; page: string };
@@ -50,6 +51,11 @@ const issuesPage = async ({ searchParams }: QueryString) => {
       />
     </Flex>
   );
+};
+
+export const metadata: Metadata = {
+  title: "Issues",
+  description: "View All Issues and their statuses",
 };
 
 export default issuesPage;

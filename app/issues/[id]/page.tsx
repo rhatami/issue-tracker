@@ -5,6 +5,7 @@ import IssueButtons from "./IssueButtons";
 import IssueDetails from "./IssueDetails";
 import { getServerSession } from "next-auth";
 import { AuthOptions } from "@/app/auth/AuthOptions";
+import { Metadata } from "next";
 
 const issueDetailPage = async ({
   params: { id },
@@ -24,6 +25,11 @@ const issueDetailPage = async ({
       <Box>{session && <IssueButtons issue={issue} />}</Box>
     </Grid>
   );
+};
+
+export const metadata: Metadata = {
+  title: "Issue Details",
+  description: "View details of an issue and edit it",
 };
 
 export const dynamic = "force-dynamic";
