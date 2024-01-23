@@ -29,7 +29,7 @@ const IssueSummary = ({ open, in_progress, closed }: Props) => {
             >
               {status.label}
             </Link>
-            <Text size="4" className="font-bold">
+            <Text size="4" className="font-bold" align="center">
               {status.value}
             </Text>
           </Flex>
